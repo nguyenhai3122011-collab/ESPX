@@ -21,7 +21,7 @@ const FIRMWARE_MANIFEST = [
   },
   {
     id: "v2c3mini",
-    name: "ESPX V2 cho Esp32 C3(Super Mini)",
+    name: "ESPX V2 cho Esp32 C3(Super Mini) (New intro)",
     chipFamily: "ESP32-C3",
     infoFile: "info/v2.txt",
     files: [
