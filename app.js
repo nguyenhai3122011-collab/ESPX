@@ -20,14 +20,25 @@ const FIRMWARE_MANIFEST = [
     ]
   },
   {
-    id: "v2c3mini",
+    id: "v2ac3mini",
     name: "ESPX V2 cho Esp32 C3(Super Mini) (New intro)",
     chipFamily: "ESP32-C3",
     infoFile: "info/v2.txt",
     files: [
       { name: "v2a.bootloader.bin", path: "firmware/v2a.bootloader.bin", offset: 0x0000, desc: "Bootloader" },
       { name: "v2a.partitions.bin", path: "firmware/v2a.partitions.bin", offset: 0x8000, desc: "Partitions" },
-      { name: "v2a1.bin", path: "firmware/v2a.bin", offset: 0x10000, desc: "Main Code" }
+      { name: "v2a.bin", path: "firmware/v2a.bin", offset: 0x10000, desc: "Main Code" }
+    ]
+  },
+  {
+    id: "v2bc3mini",
+    name: "ESPX V2 cho Esp32 C3(Super Mini) (Old intro)",
+    chipFamily: "ESP32-C3",
+    infoFile: "info/v2.txt",
+    files: [
+      { name: "v2b.bootloader.bin", path: "firmware/v2b.bootloader.bin", offset: 0x0000, desc: "Bootloader" },
+      { name: "v2b.partitions.bin", path: "firmware/v2b.partitions.bin", offset: 0x8000, desc: "Partitions" },
+      { name: "v2b.bin", path: "firmware/v2b.bin", offset: 0x10000, desc: "Main Code" }
     ]
   }
   ];
