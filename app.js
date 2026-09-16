@@ -14,7 +14,7 @@ const FIRMWARE_MANIFEST = [
     chipFamily: "ESP32-C3",
     infoFile: "info/v1.1.txt",
     files: [
-      { name: "v1.1.bootloader.bin", path: "firmware/v1.1.bootloader.bin", offset: 0x1000, desc: "Bootloader" },
+      { name: "v1.1.bootloader.bin", path: "firmware/v1.1.bootloader.bin", offset: 0x0000, desc: "Bootloader" },
       { name: "v1.1.partitions.bin", path: "firmware/v1.1.partitions.bin", offset: 0x8000, desc: "Partitions" },
       { name: "v1.1.bin", path: "firmware/v1.1.bin", offset: 0x10000, desc: "Main Code" }
     ]
