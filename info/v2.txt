@@ -1,0 +1,33 @@
+# ⚡Bản cập nhật ESPX v2
+
+> **ESPX v2** Phiên bản đầy đủ tính năng hơn so với bản v1.1.
+
+---
+
+## 🚀 Tính năng nổi bật trong ESPX v2
+
+### 📡 Wi-Fi Tools
+* **Wi-Fi Scanner:** Quét và phân tích chi tiết các mạng xung quanh (SSID, BSSID, RSSI, Channel, Encryption type).
+* **Beacon Spam / Simulator:** Tạo và phát các mạng Wi-Fi ảo (Thử nghiệm).
+
+### 📶 Bluetooth / BLE Tools
+* **BLE / BT Scanner:** Quét tìm các thiết bị Bluetooth xung quanh, hiển thị địa chỉ MAC, RSSI và loại thiết bị.
+* **Bluetooth Spam:** Thử nghiệm.
+
+### 🎮 Game System (Mới)
+Bổ sung **6 tựa game mới** giúp giải trí ngay trên màn hình thiết bị:
+1. **Flappy Bird:**
+2. **Tic tac toe:**
+3. **Pong:**
+4. **Tetris:**
+5. **dodge:** 
+6. **Dino Run:**
+
+---
+
+## 🛠️ Yêu cầu phần cứng & Thư viện
+
+### Phần cứng hỗ trợ
+* **MCU:** ESP32 C3(khuyến khích) hoặc ESP32 S3, ESP32....
+* **Màn hình:** OLED I2C SSD1306 (128x64).
+* **Nút bấm:** Để điều khiển menu và chơi game.
