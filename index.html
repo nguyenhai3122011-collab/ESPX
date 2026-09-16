@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESPX Online Web Flasher | Trình Nạp Firmware ESP32 Trực Tuyến</title>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header / Navigation Bar -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="brand-logo-wrapper">
+        <img src="assets/logo.png" alt="ESPX Logo" class="brand-logo" id="brandLogo">
+        <div class="brand-text">
+          <div class="brand-title">ESPX <span class="badge-tag">ONLINE FLASHER</span></div>
+          <div class="brand-sub">Universal WebSerial Firmware Programmer</div>
+        </div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="serial-status" id="serialStatusIndicator">
+        <span class="status-dot"></span>
+        <span class="status-text" id="statusLabel">Chưa kết nối cổng COM</span>
+      </div>
+      <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="gh-btn" title="Xem trên GitHub">
+        <svg height="18" viewBox="0 0 16 16" width="18" fill="currentColor">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+        </svg>
+        <span>GitHub Repository</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Web Serial Browser Warning (nếu trình duyệt không hỗ trợ) -->
+  <div id="unsupportedWarning" class="banner-alert hidden">
+    ⚠️ <strong>Trình duyệt không hỗ trợ Web Serial API:</strong> Vui lòng dùng <strong>Google Chrome</strong>, <strong>Microsoft Edge</strong>, hoặc <strong>Opera</strong> (máy tính hoặc Android) để có thể giao tiếp trực tiếp với vi điều khiển ESP32 qua cáp USB.
+  </div>
+
+  <!-- Main Container Layout: 2 Columns -->
+  <main class="main-layout">
+    <!-- Cột trái: Bảng điều khiển nạp ESPX -->
+    <section class="control-panel">
+      <!-- Card: Cấu hình cổng kết nối -->
+      <div class="panel-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="step-num">1</span>
+            <h3>Kết nối thiết bị ESP32</h3>
+          </div>
+          <span class="chip-detected-badge" id="chipDetectedBadge">Chưa nhận diện</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="baudRateSelect">Tốc độ nạp (Baudrate)</label>
+              <select id="baudRateSelect" class="custom-select">
+                <option value="921600" selected>921600 bps (Khuyến nghị - Siêu nhanh)</option>
+                <option value="460800">460800 bps (Nhanh)</option>
+                <option value="115200">115200 bps (Tiêu chuẩn / Ổn định)</option>
+                <option value="230400">230400 bps</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="eraseFlashCheckbox" class="checkbox-label">
+                <input type="checkbox" id="eraseFlashCheckbox">
+                <span>Xoá sạch toàn bộ Flash trước khi nạp (Full Chip Erase)</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <button id="btnConnect" class="btn btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+              <span>Kết nối cổng COM</span>
+            </button>
+            <button id="btnDisconnect" class="btn btn-outline" disabled>
+              <span>Ngắt kết nối</span>
+            </button>
+          </div>
+
+          <!-- Thông tin chip khi kết nối thành công -->
+          <div id="deviceDetails" class="device-details-box hidden">
+            <div class="detail-item"><span class="k">Dòng Chip:</span> <strong id="valChipName" class="v">-</strong></div>
+            <div class="detail-item"><span class="k">Địa chỉ MAC:</span> <code id="valChipMac" class="v">-</code></div>
+            <div class="detail-item"><span class="k">Tính năng:</span> <span id="valChipFeatures" class="v">-</span></div>
+            <div class="detail-item"><span class="k">Thạch anh:</span> <span id="valChipCrystal" class="v">-</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Chọn phiên bản Firmware & Phân vùng nạp -->
+      <div class="panel-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="step-num">2</span>
+            <h3>Chọn phiên bản Firmware ESPX</h3>
+          </div>
+          <span class="badge-mode" id="modeBadge">Preset Cloud</span>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="versionSelect">Danh sách bản phát hành (Release Version)</label>
+            <select id="versionSelect" class="custom-select">
+              <!-- Sẽ load từ JSON hoặc mảng dữ liệu -->
+            </select>
+          </div>
+
+          <!-- Tab chuyển đổi giữa Nạp tự động (theo phiên bản) và Nạp tùy chỉnh (custom file) -->
+          <div class="tab-header">
+            <button class="tab-btn active" data-tab="presetTab">3 File chuẩn (Bootloader + Partition + Main)</button>
+            <button class="tab-btn" data-tab="customTab">Tải file .bin từ máy tính</button>
+          </div>
+
+          <div id="presetTab" class="tab-content active">
+            <p class="tab-desc">Hệ thống tự động tải 3 phân vùng tiêu chuẩn của phiên bản được chọn từ GitHub/Server:</p>
+            <div class="binary-rows">
+              <div class="bin-row">
+                <div class="bin-tag">Bootloader</div>
+                <div class="bin-offset"><code id="presetBootOffset">0x1000</code></div>
+                <div class="bin-filename" id="presetBootFile">bootloader.bin</div>
+                <div class="bin-status"><span class="pill pill-ready">Sẵn sàng</span></div>
+              </div>
+              <div class="bin-row">
+                <div class="bin-tag">Partitions</div>
+                <div class="bin-offset"><code id="presetPartOffset">0x8000</code></div>
+                <div class="bin-filename" id="presetPartFile">partitions.bin</div>
+                <div class="bin-status"><span class="pill pill-ready">Sẵn sàng</span></div>
+              </div>
+              <div class="bin-row highlight-main">
+                <div class="bin-tag">Main App</div>
+                <div class="bin-offset"><code id="presetAppOffset">0x10000</code></div>
+                <div class="bin-filename" id="presetAppFile">espx_main.bin</div>
+                <div class="bin-status"><span class="pill pill-ready">Sẵn sàng</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="customTab" class="tab-content">
+            <p class="tab-desc">Hoặc bạn có thể tự chọn các file <code>.bin</code> từ máy tính cá nhân để nạp:</p>
+            <div class="custom-file-inputs">
+              <div class="custom-bin-item">
+                <div class="custom-header">
+                  <span class="badge-sub">Bootloader</span>
+                  <input type="text" id="customBootOffset" class="custom-offset-input" value="0x1000" placeholder="Offset">
+                </div>
+                <input type="file" id="fileCustomBoot" accept=".bin" class="custom-file-picker">
+              </div>
+              <div class="custom-bin-item">
+                <div class="custom-header">
+                  <span class="badge-sub">Partitions</span>
+                  <input type="text" id="customPartOffset" class="custom-offset-input" value="0x8000" placeholder="Offset">
+                </div>
+                <input type="file" id="fileCustomPart" accept=".bin" class="custom-file-picker">
+              </div>
+              <div class="custom-bin-item">
+                <div class="custom-header">
+                  <span class="badge-sub">Main App (Code chính)</span>
+                  <input type="text" id="customAppOffset" class="custom-offset-input" value="0x10000" placeholder="Offset">
+                </div>
+                <input type="file" id="fileCustomApp" accept=".bin" class="custom-file-picker">
+              </div>
+            </div>
+          </div>
+
+          <!-- Nút hành động chính Flash Firmware -->
+          <div class="flash-action-area">
+            <div class="progress-container hidden" id="flashProgressContainer">
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="flashProgressBar" style="width: 0%"></div>
+              </div>
+              <div class="progress-label">
+                <span id="flashProgressText">Đang chuẩn bị...</span>
+                <span id="flashProgressPercent">0%</span>
+              </div>
+            </div>
+
+            <div class="btn-group">
+              <button id="btnFlash" class="btn btn-accent btn-large">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+                <span>NẠP FIRMWARE ESPX (FLASH)</span>
+              </button>
+              <button id="btnResetBoard" class="btn btn-outline" disabled title="Khởi động lại bo mạch sau khi nạp">
+                🔄 Reset Chip
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Console / Terminal Output -->
+      <div class="panel-card console-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+            <span style="margin-left: 8px;">Terminal Logs & Monitor</span>
+          </div>
+          <button id="btnClearConsole" class="btn-text">Xóa Log</button>
+        </div>
+        <div class="card-body console-body">
+          <div id="serialConsole" class="terminal-screen">
+            <div class="term-line info-text">[ESPX Web Flasher] Hệ thống đã sẵn sàng. Hãy kết nối cáp USB với ESP32 và chọn "Kết nối cổng COM".</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cột phải: Hiển thị file .txt trong thư mục /info (Render Markdown GitHub style) -->
+    <section class="readme-panel">
+      <div class="panel-card github-readme-card">
+        <div class="github-card-header">
+          <div class="file-path-badge">
+            <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor">
+              <path d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l3.214 3.214c.329.328.513.773.513 1.237v8.286A1.75 1.75 0 0113.55 15H3.75A1.75 1.75 0 012 13.25V1.75z"></path>
+            </svg>
+            <span id="currentInfoFilePath">info/v2.1.0-standard.txt</span>
+          </div>
+          <div class="header-actions">
+            <button id="btnCopyReadme" class="btn-text-action" title="Sao chép nội dung">Copy Raw</button>
+            <a id="btnDownloadTxt" href="#" class="btn-text-action" download>Tải file .txt</a>
+          </div>
+        </div>
+
+        <div class="github-readme-body">
+          <!-- Markdown view -->
+          <article id="readmeContent" class="markdown-body">
+            <div class="loading-spinner">Đang tải thông tin bản phát hành...</div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-left">
+      <span>⚡ ESPX Firmware Web Tool — Thiết kế tối giản Black & White</span>
+    </div>
+    <div class="footer-right">
+      <span>Dựa trên Web Serial API & ESPTool-JS</span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="lib/crypto-js.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

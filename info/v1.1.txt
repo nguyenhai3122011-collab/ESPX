@@ -1,0 +1,4 @@
+#Phiên bản mới V1.1
+>Cập nhật giao diện demo và một số tính năng nỏ khac
+---
+Lưu ý : Đây chỉ là bản demo giao diện + intro 
