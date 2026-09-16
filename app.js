@@ -10,13 +10,24 @@ import { ESPLoader, Transport } from "./lib/esptool-bundle.js";
 const FIRMWARE_MANIFEST = [
   {
     id: "v1.1c3mini",
-    name: "ESPX V1.1 cho Esp32 c3(Super Mini)",
+    name: "ESPX V1.1 cho Esp32 C3(Super Mini)",
     chipFamily: "ESP32-C3",
     infoFile: "info/v1.1.txt",
     files: [
       { name: "v1.1.bootloader.bin", path: "firmware/v1.1.bootloader.bin", offset: 0x0000, desc: "Bootloader" },
       { name: "v1.1.partitions.bin", path: "firmware/v1.1.partitions.bin", offset: 0x8000, desc: "Partitions" },
       { name: "v1.1.bin", path: "firmware/v1.1.bin", offset: 0x10000, desc: "Main Code" }
+    ]
+  },
+  {
+    id: "v2c3mini",
+    name: "ESPX V2 cho Esp32 C3(Super Mini)",
+    chipFamily: "ESP32-C3",
+    infoFile: "info/v2.txt",
+    files: [
+      { name: "v2a.bootloader.bin", path: "firmware/v2a.bootloader.bin", offset: 0x0000, desc: "Bootloader" },
+      { name: "v2a.partitions.bin", path: "firmware/v2a.partitions.bin", offset: 0x8000, desc: "Partitions" },
+      { name: "v2a1.bin", path: "firmware/v2a.bin", offset: 0x10000, desc: "Main Code" }
     ]
   }
   ];
