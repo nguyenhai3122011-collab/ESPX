@@ -11,7 +11,7 @@ const FIRMWARE_MANIFEST = [
   {
     id: "v1.1c3mini",
     name: "ESPX V1.1 cho Esp32 c3(Super Mini)",
-    chipFamily: "ESP32 c3",
+    chipFamily: "ESP32-C3",
     infoFile: "info/v1.1.txt",
     files: [
       { name: "v1.1.bootloader.bin", path: "firmware/v1.1.bootloader.bin", offset: 0x1000, desc: "Bootloader" },
