@@ -1,0 +1,1 @@
+# Nạp firmware trống (esp32 C3)
