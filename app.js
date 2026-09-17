@@ -40,6 +40,17 @@ const FIRMWARE_MANIFEST = [
       { name: "v1.1.partitions.bin", path: "firmware/v1.1.partitions.bin", offset: 0x8000, desc: "Partitions" },
       { name: "v1.1.bin", path: "firmware/v1.1.bin", offset: 0x10000, desc: "Main Code" }
     ]
+  },
+  {
+    id: "emptyfw",
+    name: "Nạp chương trình trống cho esp32 c3",
+    chipFamily: "ESP32-C3",
+    infoFile: "info/empty_fw.txt",
+    files: [
+      { name: "empty.bootloader.bin", path: "firmware/empty.bootloader.bin", offset: 0x0000, desc: "Bootloader" },
+      { name: "empty.partitions.bin", path: "firmware/empty.partitions.bin", offset: 0x8000, desc: "Partitions" },
+      { name: "empty.bin", path: "firmware/empty.bin", offset: 0x10000, desc: "Main Code" }
+    ]
   }
   ];
 
